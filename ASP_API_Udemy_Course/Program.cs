@@ -2,6 +2,7 @@ using ASP_API_Udemy_Course;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -20,8 +21,8 @@ builder.Services.AddCors(options =>
 });
 
 //add services to the container
-var connectionstring = builder.Configuration.GetConnectionString("learning_ASP_API");
-builder.Services.AddDbContext<Learning_ASP_APIContext>(options => options.UseSqlServer(connectionstring));
+var connectionstring = builder.Configuration.GetConnectionString("Hotel_Listing_DB");
+builder.Services.AddDbContext<Hotel_Listing_DB_Context>(options => options.UseSqlServer(connectionstring));
 
 //using serilog
 builder.Host.UseSerilog(
