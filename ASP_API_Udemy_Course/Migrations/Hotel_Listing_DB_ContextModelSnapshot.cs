@@ -26,7 +26,7 @@ namespace ASP_API_Udemy_Course.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id") , 1 , 1);
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -67,7 +67,7 @@ namespace ASP_API_Udemy_Course.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1 , 1);
 
                     b.Property<string>("Address")
                         .IsRequired()

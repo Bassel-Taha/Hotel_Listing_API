@@ -1,7 +1,7 @@
 ﻿using ASP_API_Udemy_Course.data;
 using Microsoft.EntityFrameworkCore;
 
-internal class Hotel_Listing_DB_Context : DbContext
+public class Hotel_Listing_DB_Context : DbContext
 {
     public Hotel_Listing_DB_Context(DbContextOptions options) : base(options)
     {
