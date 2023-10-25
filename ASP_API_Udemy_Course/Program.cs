@@ -1,13 +1,15 @@
 using ASP_API_Udemy_Course;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
-
+using ASP_API_Udemy_Course.AutoMapper;
+using ASP_API_Udemy_Course.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
 builder.Services.AddControllers();
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -21,9 +23,18 @@ builder.Services.AddCors(options =>
 });
 
 //add services to the container
+
+//adding the DB context to the services to start creating the DataBase  
 var connectionstring = builder.Configuration.GetConnectionString("Hotel_Listing_DB");
 builder.Services.AddDbContext<Hotel_Listing_DB_Context>(options => options.UseSqlServer(connectionstring));
 
+//adding automapper to the services
+builder.Services.AddAutoMapper(typeof(AutoMapperConfig));
+
+builder.Services.AddScoped<IcountryRepository, CountryRepositor>();
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //using serilog
 builder.Host.UseSerilog(
                         ( ctx , lc ) => lc.WriteTo.Console()
@@ -31,6 +42,7 @@ builder.Host.UseSerilog(
 
 var app = builder.Build();
 
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {

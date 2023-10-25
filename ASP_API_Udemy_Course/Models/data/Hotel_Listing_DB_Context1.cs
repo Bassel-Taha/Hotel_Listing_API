@@ -1,4 +1,4 @@
-﻿using ASP_API_Udemy_Course.data;
+﻿using ASP_API_Udemy_Course.Models.data;
 using Microsoft.EntityFrameworkCore;
 
 public class Hotel_Listing_DB_Context : DbContext
@@ -12,7 +12,7 @@ public class Hotel_Listing_DB_Context : DbContext
 
     public DbSet<Country> countries { get; set; }
 
-
+    #region butting data in the DB as default data 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -75,6 +75,6 @@ public class Hotel_Listing_DB_Context : DbContext
             }
             ) ;
     }
+    #endregion
 
-    
 }
