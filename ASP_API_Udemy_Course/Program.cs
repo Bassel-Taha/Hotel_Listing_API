@@ -14,6 +14,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+
 //using cors and allowing all processes for the user 
 builder.Services.AddCors(options =>
 {
@@ -28,10 +29,21 @@ builder.Services.AddCors(options =>
 var connectionstring = builder.Configuration.GetConnectionString("Hotel_Listing_DB");
 builder.Services.AddDbContext<Hotel_Listing_DB_Context>(options => options.UseSqlServer(connectionstring));
 
+
+
+
+
 //adding automapper to the services
 builder.Services.AddAutoMapper(typeof(AutoMapperConfig));
 
+
+
+// inplimenting the interfaces function of the repository from the repository class  
+/// implimenting country repository
 builder.Services.AddScoped<IcountryRepository, CountryRepositor>();
+/// implimenting hotel repository
+builder.Services.AddScoped<IhotelRepository, HotelRepositor>();
+
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

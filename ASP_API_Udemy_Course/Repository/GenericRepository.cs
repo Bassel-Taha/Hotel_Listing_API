@@ -19,6 +19,7 @@ namespace ASP_API_Udemy_Course.Repository
         #endregion
 
 
+        //posting the data to the database
         public async Task<T> Addasync(T entity)
         {
            await _context.AddAsync<T>(entity);
@@ -26,6 +27,7 @@ namespace ASP_API_Udemy_Course.Repository
             return entity;
         }
 
+        //deleting the data from the database
         public async Task Deleteasync(int Id)
         {
             var entity = await Getasync(Id);
@@ -34,17 +36,20 @@ namespace ASP_API_Udemy_Course.Repository
 
         }
 
+        //checking if the entity exists in the database
         public async Task<bool> Exists(int id)
         {
             var entity = await Getasync(id);
             return entity != null;
         }
 
+        //getting all the data from the database
         public async Task<List<T>> GetAllasync()
         {
             return await _context.Set<T>().ToListAsync();
         }
 
+        //getting a specific entity from the database
         public async Task<T> Getasync(int? Id)
         {
             if (_context.countries == null)
@@ -54,6 +59,7 @@ namespace ASP_API_Udemy_Course.Repository
             return await _context.Set<T>().FindAsync(Id);
         }
 
+        //updating "put" the data in the database 
         public async Task Updateasync( T entity)
         {
             //also can use Update function to modify the entity
@@ -66,10 +72,6 @@ namespace ASP_API_Udemy_Course.Repository
 
         }
 
-        public async Task SaveChanges()
-        {
-            await _context.SaveChangesAsync();
-        }   
 
        
     }
