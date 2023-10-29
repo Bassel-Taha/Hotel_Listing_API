@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ASP_API_Udemy_Course.Migrations
 {
     [DbContext(typeof(Hotel_Listing_DB_Context))]
-    partial class Hotel_Listing_DB_ContextModelSnapshot : ModelSnapshot
+    [Migration("20231029082645_Adding_IdentityCore_To_The_DB")]
+    partial class Adding_IdentityCore_To_The_DB
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -220,20 +223,6 @@ namespace ASP_API_Udemy_Course.Migrations
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("AspNetRoles", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = "881c4cbd-989b-499c-9118-6b542af4a81e",
-                            Name = "ADMIN",
-                            NormalizedName = "Admin"
-                        },
-                        new
-                        {
-                            Id = "8ee60f2b-8257-4c68-91f9-9cb34789d707",
-                            Name = "USER1",
-                            NormalizedName = "User1"
-                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

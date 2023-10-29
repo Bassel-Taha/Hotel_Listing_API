@@ -112,7 +112,7 @@ namespace ASP_API_Udemy_Course.Controllers
                 return NotFound();
             }
 
-            _hotelRepository.Deleteasync(id);
+            await _hotelRepository.Deleteasync(id);
 
             return NoContent();
         }
