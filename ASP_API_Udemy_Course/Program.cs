@@ -4,6 +4,7 @@ using Serilog;
 using ASP_API_Udemy_Course.AutoMapper;
 using ASP_API_Udemy_Course.Repository;
 using Microsoft.AspNetCore.Identity;
+using ASP_API_Udemy_Course.Contract;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,7 +15,12 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddIdentityCore<ApiUser>().AddRoles<IdentityRole>().AddEntityFrameworkStores<Hotel_Listing_DB_Context>();
+
+
+//adding the IdentityCore to the services
+builder.Services.AddIdentityCore<ApiUser>()
+                .AddRoles<IdentityRole>()
+                .AddEntityFrameworkStores<Hotel_Listing_DB_Context>();
 
 
 //using cors and allowing all processes for the user 
@@ -32,9 +38,6 @@ var connectionstring = builder.Configuration.GetConnectionString("Hotel_Listing_
 builder.Services.AddDbContext<Hotel_Listing_DB_Context>(options => options.UseSqlServer(connectionstring));
 
 
-
-
-
 //adding automapper to the services
 builder.Services.AddAutoMapper(typeof(AutoMapperConfig));
 
@@ -45,6 +48,9 @@ builder.Services.AddAutoMapper(typeof(AutoMapperConfig));
 builder.Services.AddScoped<IcountryRepository, CountryRepositor>();
 /// implimenting hotel repository
 builder.Services.AddScoped<IhotelRepository, HotelRepositor>();
+/// iplimenting the auth manager
+builder.Services.AddScoped<IAuthManager, AuthManager>();
+
 
 
 
