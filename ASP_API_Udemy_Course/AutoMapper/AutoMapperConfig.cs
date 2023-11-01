@@ -26,7 +26,8 @@ namespace ASP_API_Udemy_Course.AutoMapper
             CreateMap<Hotel, PutHotelDTO>().ReverseMap();
 
 
-            _ = CreateMap<ApiUser, APIUser_DTO>().ReverseMap();
+            CreateMap<ApiUser, APIUser_DTO>().ReverseMap();
+            
 
         }
     }

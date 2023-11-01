@@ -18,6 +18,23 @@ namespace ASP_API_Udemy_Course.Repository
             this._mapper = mapper;
             this._userManager = roleManager;
         }
+            
+        public async Task<bool> Login(LoginDTO loginDTO)
+        {
+            var User = await _userManager.FindByEmailAsync(loginDTO.Email);
+            if (User == null)
+            {
+                return false;
+            }
+            var Passwordcheck = await _userManager.CheckPasswordAsync(User, loginDTO.PasswordHash);
+            if (!Passwordcheck)
+            {
+                return false;
+            }
+             return true;
+
+        }
+
         public async Task<IEnumerable<IdentityError>> Register(APIUser_DTO userDTO)
         {
             var user = _mapper.Map<ApiUser>(userDTO);

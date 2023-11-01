@@ -7,5 +7,6 @@ namespace ASP_API_Udemy_Course.Contract
     public interface IAuthManager
     {
         Task<IEnumerable<IdentityError>> Register (APIUser_DTO userDTO);
+        Task<bool> Login(LoginDTO loginDTO);
     }
 }

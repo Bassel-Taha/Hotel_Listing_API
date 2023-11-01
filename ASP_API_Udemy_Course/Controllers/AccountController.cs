@@ -40,5 +40,22 @@ namespace ASP_API_Udemy_Course.Controllers
             
             return Ok();
         }
+
+        //Post: api/account/login
+        [HttpPost]
+        [Route("login")]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> login (LoginDTO loginDTO)
+        {
+            var Loginvalidation =  await _authManager.Login(loginDTO);
+            if (!Loginvalidation)
+            {
+                return BadRequest("Invalid Login Attempt");
+            }
+            
+            return Ok("valid login attempt");
+        }
     }
 }
