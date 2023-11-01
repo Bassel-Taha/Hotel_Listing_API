@@ -5,6 +5,9 @@ using ASP_API_Udemy_Course.AutoMapper;
 using ASP_API_Udemy_Course.Repository;
 using Microsoft.AspNetCore.Identity;
 using ASP_API_Udemy_Course.Contract;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -31,7 +34,6 @@ builder.Services.AddCors(options =>
                                          .AllowAnyMethod());
 });
 
-//add services to the container
 
 //adding the DB context to the services to start creating the DataBase  
 var connectionstring = builder.Configuration.GetConnectionString("Hotel_Listing_DB");
@@ -51,6 +53,25 @@ builder.Services.AddScoped<IhotelRepository, HotelRepositor>();
 /// iplimenting the auth manager
 builder.Services.AddScoped<IAuthManager, AuthManager>();
 
+//configuring the authentication JWTbearer
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme; //bearer token
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ValidIssuer = builder.Configuration["JWtAuthentication:Issuer"],
+        ValidAudience = builder.Configuration["JWtAuthentication:Audience"],
+        ClockSkew = TimeSpan.Zero,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWtAuthentication:Key"]))
+    };
+});
 
 
 
