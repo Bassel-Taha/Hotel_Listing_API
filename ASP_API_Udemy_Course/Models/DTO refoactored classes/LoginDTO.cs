@@ -8,7 +8,7 @@ namespace ASP_API_Udemy_Course.Contract
         public string Email { get; set; }
 
         [Required]
-        [StringLength(10, ErrorMessage = "the password should be between 6 and 10 characters", MinimumLength = 6)]
+        [StringLength(25, ErrorMessage = "the password should be between 6 and 10 characters", MinimumLength = 6)]
         public string PasswordHash { get; set; }
     }
 }
