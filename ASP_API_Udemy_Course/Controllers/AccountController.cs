@@ -1,9 +1,11 @@
 ﻿using ASP_API_Udemy_Course.Contract;
 using ASP_API_Udemy_Course.Models.DTO_refoactored_classes;
+using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Server.IIS.Core;
+using NuGet.Common;
 
 namespace ASP_API_Udemy_Course.Controllers
 {
@@ -12,6 +14,7 @@ namespace ASP_API_Udemy_Course.Controllers
     [ApiController]
     public class AccountController : ControllerBase
     {
+        private readonly IMapper _mapper;
         private readonly IAuthManager _authManager;
 
         public AccountController(IAuthManager authManager)
@@ -52,13 +55,13 @@ namespace ASP_API_Udemy_Course.Controllers
         // Login method to authenticate user
         public async Task<IActionResult> login(LoginDTO loginDTO)
         {
-            var Loginvalidation = await _authManager.Login(loginDTO);
-            if (!Loginvalidation)
+
+            var user_token = await _authManager.Login(loginDTO);
+            if (user_token == null)
             {
                 return BadRequest("Invalid Login Attempt");
-            }
-
-            return Ok("valid login attempt");
+            }     
+            return Ok(user_token);
         }
     }
 }
