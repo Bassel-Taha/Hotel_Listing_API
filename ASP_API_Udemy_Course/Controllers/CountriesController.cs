@@ -11,6 +11,7 @@ using ASP_API_Udemy_Course.Models.data;
 using ASP_API_Udemy_Course.Models.automapping_data_for_security.county;
 using System.Drawing;
 using ASP_API_Udemy_Course.Repository;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ASP_API_Udemy_Course.Controllers
 {
@@ -29,6 +30,7 @@ namespace ASP_API_Udemy_Course.Controllers
 
         // GET: api/Countries
         [HttpGet]
+        [Authorize]
         public async Task<ActionResult<IEnumerable<GetCountryDTO>>> Getcountries()
         {
           if (await _countryRepositor.GetAllasync() == null)
@@ -42,6 +44,7 @@ namespace ASP_API_Udemy_Course.Controllers
 
         // GET: api/Countries/5
         [HttpGet("{id}")]
+        [Authorize]
         public async Task<ActionResult<GetFullCountryDetailsDTO>> GetCountry(int id)
         {
           if (await _countryRepositor.GetAllasync() == null)
@@ -63,6 +66,7 @@ namespace ASP_API_Udemy_Course.Controllers
         // PUT: api/Countries/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
+        [Authorize(Roles = "ADMIN")]
         public async Task<IActionResult> PutCountry(int id, UpdateCountryDTO updateCountryDTO)
         {
             var country = await _countryRepositor.Getasync(id);
@@ -99,9 +103,10 @@ namespace ASP_API_Udemy_Course.Controllers
         // POST: api/Countries
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
+        [Authorize(Roles = "ADMIN")]
         public async Task<ActionResult<Country>> PostCountry(CreateNewCountry createNewCountry)
         {
-            if (_countryRepositor.GetAllasync() == null)
+            if (await _countryRepositor.GetAllasync() == null)
             {
                 return Problem("Entity set 'Hotel_Listing_DB_Context.countries'  is null.");
             }
@@ -118,6 +123,7 @@ namespace ASP_API_Udemy_Course.Controllers
 
         // DELETE: api/Countries/5
         [HttpDelete("{id}")]
+        [Authorize(Roles = "ADMIN")]
         public async Task<IActionResult> DeleteCountry(int id)
         {
             if (await _countryRepositor.GetAllasync() == null)
