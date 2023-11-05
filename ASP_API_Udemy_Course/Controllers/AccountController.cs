@@ -1,6 +1,8 @@
 ﻿using ASP_API_Udemy_Course.Contract;
 using ASP_API_Udemy_Course.Models.DTO_refoactored_classes;
+using ASP_API_Udemy_Course.Models.DTO_refoactored_classes.UsersDTO;
 using AutoMapper;
+using Azure.Identity;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
@@ -53,7 +55,7 @@ namespace ASP_API_Udemy_Course.Controllers
         ////[ProducesResponseType(StatusCodes.Status400BadRequest)]
         ////[ProducesResponseType(StatusCodes.Status200OK)]
         // Login method to authenticate user
-        public async Task<IActionResult> login(LoginDTO loginDTO)
+        public async Task<IActionResult> login([FromBody] LoginDTO loginDTO)
         {
 
             var user_token = await _authManager.Login(loginDTO);
@@ -62,6 +64,25 @@ namespace ASP_API_Udemy_Course.Controllers
                 return BadRequest("Invalid Login Attempt");
             }     
             return Ok(user_token);
+        }
+
+        //Post: api/account/RefreshToken
+        // the endpoint For refreshing the token must be Post
+        [HttpPost]
+        [Route("RefreshToken")]
+        ////[ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        ////[ProducesResponseType(StatusCodes.Status400BadRequest)]
+        ////[ProducesResponseType(StatusCodes.Status200OK)]
+        // refresh token method to authenticate user
+        public async Task<IActionResult> VerifyRefreshToken([FromBody] AuthResponseDTO request)
+        {
+
+            var user_refresh_token = await _authManager.VerifyRefreshToken(request);
+            if (user_refresh_token == null)
+            {
+                return BadRequest("Invalid Login Attempt");
+            }
+            return Ok(user_refresh_token);
         }
     }
 }

@@ -11,5 +11,9 @@ namespace ASP_API_Udemy_Course.Contract
 
         Task<AuthResponseDTO> Login(LoginDTO loginDTO);
 
+        Task<String> GenerateRefreshToken();
+
+        Task<AuthResponseDTO> VerifyRefreshToken(AuthResponseDTO request);
+
     }
 }

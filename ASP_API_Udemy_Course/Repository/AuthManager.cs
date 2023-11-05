@@ -17,6 +17,7 @@ namespace ASP_API_Udemy_Course.Repository
         private readonly IMapper _mapper;
         private readonly UserManager<ApiUser> _userManager;
         private readonly IConfiguration _config;
+        public ApiUser _user { get; set; }
 
         public AuthManager(IMapper mapper, UserManager<ApiUser> roleManager, IConfiguration config)
         {
@@ -28,38 +29,80 @@ namespace ASP_API_Udemy_Course.Repository
 
         public async Task<AuthResponseDTO> Login(LoginDTO loginDTO)
         {
-            var User = await _userManager.FindByEmailAsync(loginDTO.Email);
-            if (User == null)
+            _user = await _userManager.FindByEmailAsync(loginDTO.Email);
+            if (_user == null)
             {
                 return null;
             }
-            var Passwordcheck = await _userManager.CheckPasswordAsync(User, loginDTO.PasswordHash);
+            var Passwordcheck = await _userManager.CheckPasswordAsync(_user, loginDTO.PasswordHash);
             if (!Passwordcheck)
             {
                 return null;
             }
-            var token = await GenerateToken(User);
+            var token = await GenerateToken();
             return new AuthResponseDTO
             {
-                ID = User.Id,
-                Username = User.UserName,
-                Token = token
-
+                ID = _user.Id,
+                Username = _user.UserName,
+                Token = token,
+                RefreshToken = await GenerateRefreshToken()
             };
+        }
+        public async Task<string> GenerateRefreshToken()
+        {
+            await _userManager.RemoveAuthenticationTokenAsync(_user, "HotelListing_API", "RefreshToken");
+            var refreshedtoken = await _userManager.GenerateUserTokenAsync(_user, "HotelListing_API", "RefreshToken");
+            var result = await _userManager.SetAuthenticationTokenAsync(_user, "HotelListing_API", "RefreshToken", refreshedtoken);
+            return refreshedtoken;
+        }
+
+
+
+        public async Task<AuthResponseDTO> VerifyRefreshToken(AuthResponseDTO request)
+        {
+            var JWTHandeler = new JwtSecurityTokenHandler();
+            var tokencontent = JWTHandeler.ReadJwtToken(request.Token);
+            var username = tokencontent.Claims.FirstOrDefault(claim => claim.Type == JwtRegisteredClaimNames.Sub).Value;
+            _user = await _userManager.FindByNameAsync(username);
+            if (_user == null|| request.ID != _user.Id)
+            {
+                return null;
+            }
+            var result = await _userManager.VerifyUserTokenAsync(_user, "HotelListing_API", "RefreshToken", request.RefreshToken);
+            if (result)
+            {
+                var token = await GenerateToken();
+                return new AuthResponseDTO
+                {
+                    ID = _user.Id,
+                    Username = _user.UserName,
+                    Token = token,
+                    RefreshToken = await GenerateRefreshToken()
+                };
+            }
+            else
+            {
+               
+                await _userManager.UpdateSecurityStampAsync(_user);
+                return null;
+
+            }
+
 
         }
 
+
         public async Task<IEnumerable<IdentityError>> Register(APIUser_DTO userDTO)
         {
-            var user = _mapper.Map<ApiUser>(userDTO);
-            user.UserName = userDTO.Email;
+            _user = _mapper.Map<ApiUser>(userDTO);
+            _user.UserName = userDTO.Email;
 
-            var result = await _userManager.CreateAsync(user, userDTO.PasswordHash);
+            var result = await _userManager.CreateAsync(_user, userDTO.PasswordHash);
 
             //adding the user to the rolles 
             if (result.Succeeded)
             {
-                await _userManager.AddToRoleAsync(user, "USER1");
+                await _userManager.AddToRoleAsync(_user, "USER1");
             }
 
             return result.Errors;
@@ -67,31 +110,33 @@ namespace ASP_API_Udemy_Course.Repository
 
         }
 
-        public async Task<string> GenerateToken(ApiUser user)
+        //making it internal cuz it wont be used outside the class
+        internal async Task<string> GenerateToken()
         {
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["JWtAuthentication:Key"]));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
-            var Roles = await _userManager.GetRolesAsync(user);
+            var Roles = await _userManager.GetRolesAsync(_user);
             var RolesClaims = Roles.Select(role => new Claim(ClaimTypes.Role, role)).ToList();
-            var Userclaims = await _userManager.GetClaimsAsync(user);
+            var Userclaims = await _userManager.GetClaimsAsync(_user);
             var claims = new List<Claim>
             {
-                new Claim (JwtRegisteredClaimNames.Sub, user.Email),
+                new Claim (JwtRegisteredClaimNames.Sub, _user.Email),
                 new Claim (JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new Claim (JwtRegisteredClaimNames.Email, user.Email),
-                new Claim ("Id", user.Id),
+                new Claim (JwtRegisteredClaimNames.Email, _user.Email),
+                new Claim ("Id", _user.Id),
              }.Union(RolesClaims).Union(Userclaims);
-            var token = new JwtSecurityToken (issuer: _config["JWtAuthentication:Issuer"],
+            var token = new JwtSecurityToken(issuer: _config["JWtAuthentication:Issuer"],
                                               audience: _config["JWtAuthentication:Audience"],
                                               claims: claims,
                                               expires: DateTime.Now.AddMinutes(Convert.ToInt32(_config["JWtAuthentication:TokenExpirationInMinutes"])),
                                               signingCredentials: credentials
                                               );
-            return  new JwtSecurityTokenHandler().WriteToken(token);
+            return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
-            
+      
     }
-
 }
+
+
 

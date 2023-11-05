@@ -34,11 +34,11 @@ builder.Services.AddSwaggerGen(c =>
     });
     c.AddSecurityRequirement(new OpenApiSecurityRequirement()
     {
-        {
-      new OpenApiSecurityScheme
       {
-        Reference = new OpenApiReference
+        new OpenApiSecurityScheme
         {
+          Reference = new OpenApiReference
+          {
             Type = ReferenceType.SecurityScheme,
             Id = "Bearer"
           },
@@ -56,7 +56,9 @@ builder.Services.AddSwaggerGen(c =>
 //adding the IdentityCore to the services
 builder.Services.AddIdentityCore<ApiUser>()
                 .AddRoles<IdentityRole>()
-                .AddEntityFrameworkStores<Hotel_Listing_DB_Context>();
+                .AddTokenProvider<DataProtectorTokenProvider<ApiUser>>("HotelListing_API")
+                .AddEntityFrameworkStores<Hotel_Listing_DB_Context>()
+                .AddDefaultTokenProviders();
 
 
 //using cors and allowing all processes for the user 
