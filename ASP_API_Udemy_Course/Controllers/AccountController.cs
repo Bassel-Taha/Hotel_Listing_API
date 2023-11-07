@@ -16,12 +16,13 @@ namespace ASP_API_Udemy_Course.Controllers
     [ApiController]
     public class AccountController : ControllerBase
     {
-        private readonly IMapper _mapper;
         private readonly IAuthManager _authManager;
+        private readonly ILogger<AccountController> _logger;
 
-        public AccountController(IAuthManager authManager)
+        public AccountController(IAuthManager authManager, ILogger<AccountController> Logger)
         {
             this._authManager = authManager;
+            this._logger = Logger;
         }
 
         //Post: api/account/register
@@ -33,18 +34,30 @@ namespace ASP_API_Udemy_Course.Controllers
         // Register method to register a new user
         public async Task<IActionResult> Register([FromBody] APIUser_DTO aPIUser_DTO)
         {
-            var errors = await _authManager.Register(aPIUser_DTO);
-            if (errors.Any())
+
+            _logger.LogInformation($"regestrign a new user account ");
+            try
             {
-                foreach (var er in errors)
+
+                var errors = await _authManager.Register(aPIUser_DTO);
+                if (errors.Any())
                 {
-                    ModelState.AddModelError(er.Code, er.Description);
+                    foreach (var er in errors)
+                    {
+                        ModelState.AddModelError(er.Code, er.Description);
+                    }
+                    return BadRequest(ModelState);
                 }
-                return BadRequest(ModelState);
+
+
+                return Ok();
             }
-
-
-            return Ok();
+            catch(Exception ex)
+            {
+                _logger.LogError(ex, $"something went wring with {nameof(Register)}");
+                return Problem($"something wnt wrong in {nameof(Register)}", statusCode: 500);
+            }
+            
         }
 
         //Post: api/account/login
@@ -57,13 +70,23 @@ namespace ASP_API_Udemy_Course.Controllers
         // Login method to authenticate user
         public async Task<IActionResult> login([FromBody] LoginDTO loginDTO)
         {
-
-            var user_token = await _authManager.Login(loginDTO);
-            if (user_token == null)
+            _logger.LogInformation($"attempt of logging with the username : {loginDTO.Email}");
+            try
             {
-                return BadRequest("Invalid Login Attempt");
-            }     
-            return Ok(user_token);
+                var user_token = await _authManager.Login(loginDTO);
+                if (user_token == null)
+                {
+                    return BadRequest("Invalid Login Attempt");
+                }
+                return Ok(user_token);
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex , $"login error with {nameof(login)} using username : {loginDTO.Email}");
+                return Problem($"something went wrong in the login", statusCode : 500 );
+            }
+            
         }
 
         //Post: api/account/RefreshToken
@@ -76,10 +99,11 @@ namespace ASP_API_Udemy_Course.Controllers
         // refresh token method to authenticate user
         public async Task<IActionResult> VerifyRefreshToken([FromBody] AuthResponseDTO request)
         {
-
+            _logger.LogInformation($"generating and congirming refresh token with a new token for username : {request.Username}");
             var user_refresh_token = await _authManager.VerifyRefreshToken(request);
             if (user_refresh_token == null)
             {
+                _logger.LogError($"something went wrong in creating a refresh token using {nameof(VerifyRefreshToken)}");
                 return BadRequest("Invalid Login Attempt");
             }
             return Ok(user_refresh_token);

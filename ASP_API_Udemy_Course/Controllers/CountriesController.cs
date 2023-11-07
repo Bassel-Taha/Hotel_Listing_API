@@ -21,11 +21,13 @@ namespace ASP_API_Udemy_Course.Controllers
     {
         private readonly IcountryRepository _countryRepositor;
         private readonly IMapper _mapper;
+        private readonly ILogger<CountriesController> _logger;
 
-        public CountriesController(IcountryRepository countryRepositor, IMapper mapper)
+        public CountriesController(IcountryRepository countryRepositor, IMapper mapper , ILogger<CountriesController> logger)
         {
             this._countryRepositor = countryRepositor;
             this._mapper = mapper;
+            this._logger = logger;
         }
 
         // GET: api/Countries
@@ -33,8 +35,10 @@ namespace ASP_API_Udemy_Course.Controllers
         [Authorize]
         public async Task<ActionResult<IEnumerable<GetCountryDTO>>> Getcountries()
         {
+            _logger.LogInformation($"getting all the countries in the DB usign {nameof(Getcountries)}");
           if (await _countryRepositor.GetAllasync() == null)
           {
+                _logger.LogError($"error in the {nameof(Getcountries)} funstion because there is not countries in the data base");
               return NotFound();
           }
             var countries = await _countryRepositor.GetAllasync();
@@ -47,15 +51,20 @@ namespace ASP_API_Udemy_Course.Controllers
         [Authorize]
         public async Task<ActionResult<GetFullCountryDetailsDTO>> GetCountry(int id)
         {
+            _logger.LogInformation($"getting the country usign {nameof(GetCountry)} by Id ");
           if (await _countryRepositor.GetAllasync() == null)
           {
-              return NotFound();
+                _logger.LogError($"error getting all the countries in the DB because there is no countries in the DB");
+
+                return NotFound();
           }
 
             var country = await _countryRepositor.GetDetails(id);
 
             if (country == null)
             {
+                _logger.LogError($"error getting country by ID using {nameof(GetCountry)} because there is no country by that ID");
+
                 return NotFound();
             }
             var CountryFullDetails = _mapper.Map<GetFullCountryDetailsDTO>(country);
@@ -69,10 +78,12 @@ namespace ASP_API_Udemy_Course.Controllers
         [Authorize(Roles = "ADMIN")]
         public async Task<IActionResult> PutCountry(int id, UpdateCountryDTO updateCountryDTO)
         {
+            _logger.LogInformation($"editing the data of a country in the DB by ID using {nameof(PutCountry)} function");
             var country = await _countryRepositor.Getasync(id);
 
             if (id != country.Id)
             {
+                _logger.LogError($"error the country id given isnt the same as the country in the function {nameof(PutCountry)}");
                 return BadRequest();
             }
 
@@ -89,6 +100,7 @@ namespace ASP_API_Udemy_Course.Controllers
             {
                 if (!await CountryExists(id))
                 {
+                    _logger.LogError($"error getting country by ID using {nameof(PutCountry)} because there is no country by that ID");
                     return NotFound();
                 }
                 else
@@ -106,6 +118,7 @@ namespace ASP_API_Udemy_Course.Controllers
         [Authorize(Roles = "ADMIN")]
         public async Task<ActionResult<Country>> PostCountry(CreateNewCountry createNewCountry)
         {
+            _logger.LogInformation($"posting a new country to the data base using {nameof(PostCountry)}");
             if (await _countryRepositor.GetAllasync() == null)
             {
                 return Problem("Entity set 'Hotel_Listing_DB_Context.countries'  is null.");
@@ -126,18 +139,22 @@ namespace ASP_API_Udemy_Course.Controllers
         [Authorize(Roles = "ADMIN")]
         public async Task<IActionResult> DeleteCountry(int id)
         {
+            _logger.LogInformation($"deleting a country from the data base with all its hotels using {nameof(DeleteCountry)}");
             if (await _countryRepositor.GetAllasync() == null)
             {
+                _logger.LogError($"there is no countries in the data base");
                 return NotFound();
             }
             var country = await _countryRepositor.Getasync(id);
             if (country == null)
             {
+                _logger.LogError($"there is not country in the data base with the given ID" );
                 return NotFound();
             }
 
             await _countryRepositor.Deleteasync(country.Id);
-            
+
+            _logger.LogInformation($"the country {country.Name} was deleted from the data base");
 
             return NoContent();
         }

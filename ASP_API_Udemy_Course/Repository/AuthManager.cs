@@ -48,6 +48,7 @@ namespace ASP_API_Udemy_Course.Repository
                 RefreshToken = await GenerateRefreshToken()
             };
         }
+
         public async Task<string> GenerateRefreshToken()
         {
             await _userManager.RemoveAuthenticationTokenAsync(_user, "HotelListing_API", "RefreshToken");
@@ -55,8 +56,6 @@ namespace ASP_API_Udemy_Course.Repository
             var result = await _userManager.SetAuthenticationTokenAsync(_user, "HotelListing_API", "RefreshToken", refreshedtoken);
             return refreshedtoken;
         }
-
-
 
         public async Task<AuthResponseDTO> VerifyRefreshToken(AuthResponseDTO request)
         {
@@ -90,7 +89,6 @@ namespace ASP_API_Udemy_Course.Repository
 
 
         }
-
 
         public async Task<IEnumerable<IdentityError>> Register(APIUser_DTO userDTO)
         {
@@ -134,7 +132,6 @@ namespace ASP_API_Udemy_Course.Repository
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
-      
     }
 }
 
