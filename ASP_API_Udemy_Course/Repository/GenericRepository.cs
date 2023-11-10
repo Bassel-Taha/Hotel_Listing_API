@@ -1,4 +1,7 @@
 ﻿using ASP_API_Udemy_Course.Contract;
+using ASP_API_Udemy_Course.Models;
+using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -11,10 +14,12 @@ namespace ASP_API_Udemy_Course.Repository
 
         #region injecting the database context
         private readonly Hotel_Listing_DB_Context _context;
+        private readonly IMapper _mapper;
 
-        public GenericRepository( Hotel_Listing_DB_Context context)
+        public GenericRepository( Hotel_Listing_DB_Context context , IMapper mapper)
         {
             _context =  context;
+            this._mapper = mapper;
         }
         #endregion
 
@@ -49,6 +54,22 @@ namespace ASP_API_Udemy_Course.Repository
             return await _context.Set<T>().ToListAsync();
         }
 
+        public async Task<PageResult<TResult>> GetAllPagedResultsAsync<TResult>(QueryParameters queryParameters)
+        {
+            var TotalsSize = await _context.Set<T>().CountAsync();
+            var entities = await _context.Set<T>()
+                            .Skip(queryParameters.StartIndex)
+                            .Take(queryParameters.PageSize)
+                            .ProjectTo<TResult>(_mapper.ConfigurationProvider)
+                            .ToListAsync();
+            return new PageResult<TResult>
+            {
+                TotalCount = TotalsSize,
+                PageNumber = queryParameters.PageNumber,
+                RecordNumber = queryParameters.PageSize,
+                Itims = entities
+            };
+        }
         //getting a specific entity from the database
         public async Task<T> Getasync(int? Id)
         {

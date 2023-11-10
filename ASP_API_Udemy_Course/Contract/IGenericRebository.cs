@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using ASP_API_Udemy_Course.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace ASP_API_Udemy_Course.Contract
 {
@@ -16,6 +17,9 @@ namespace ASP_API_Udemy_Course.Contract
         Task  Deleteasync (int Id);
         //if the entity exists in the database table
         Task <bool> Exists (int id);
+        // getting all entities from the database table but using the query parameters for a different outbout structure
+        ///also using a new generic (TResult) type to return the result/
+        Task <PageResult<TResult>> GetAllPagedResultsAsync<TResult>(QueryParameters queryParameters);
 
     }
 }

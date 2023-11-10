@@ -12,6 +12,7 @@ using ASP_API_Udemy_Course.Models.automapping_data_for_security.county;
 using System.Drawing;
 using ASP_API_Udemy_Course.Repository;
 using Microsoft.AspNetCore.Authorization;
+using ASP_API_Udemy_Course.Models;
 
 namespace ASP_API_Udemy_Course.Controllers
 {
@@ -30,8 +31,8 @@ namespace ASP_API_Udemy_Course.Controllers
             this._logger = logger;
         }
 
-        // GET: api/Countries
-        [HttpGet]
+        // GET: api/Countries/GetAll
+        [HttpGet("GetAll")]
         
         public async Task<ActionResult<IEnumerable<GetCountryDTO>>> Getcountries()
         {
@@ -44,6 +45,21 @@ namespace ASP_API_Udemy_Course.Controllers
             var countries = await _countryRepositor.GetAllasync();
             var getcountries = _mapper.Map <List<GetCountryDTO>>(countries);
             return getcountries;
+        }
+
+        // GET: api/Countries/?StartIndex=1&MaxPageSize=10&pageNumber=1
+        [HttpGet]
+
+        public async Task<ActionResult<PageResult<GetCountryDTO>>> GetPagedCountries([FromQuery] QueryParameters queryParameters)
+        {
+            _logger.LogInformation($"getting all the countries in the DB usign {nameof(Getcountries)}");
+            if (await _countryRepositor.GetAllasync() == null)
+            {
+                _logger.LogError($"error in the {nameof(Getcountries)} funstion because there is not countries in the data base");
+                return NotFound();
+            }
+            var PagedCountries = await _countryRepositor.GetAllPagedResultsAsync<GetCountryDTO>(queryParameters);
+            return PagedCountries;
         }
 
         // GET: api/Countries/5
