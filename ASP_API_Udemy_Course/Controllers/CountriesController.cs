@@ -32,7 +32,7 @@ namespace ASP_API_Udemy_Course.Controllers
 
         // GET: api/Countries
         [HttpGet]
-        [Authorize]
+        
         public async Task<ActionResult<IEnumerable<GetCountryDTO>>> Getcountries()
         {
             _logger.LogInformation($"getting all the countries in the DB usign {nameof(Getcountries)}");

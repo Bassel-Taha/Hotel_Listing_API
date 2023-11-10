@@ -17,7 +17,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();;
+builder.Services.AddEndpointsApiExplorer();
 //using JWT with swagger
 builder.Services.AddSwaggerGen(c =>
 {
@@ -108,6 +108,13 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
+// adding body cashing to the services to inhance the performance of the API with the downside of using more memory
+builder.Services.AddResponseCaching(options =>
+{
+    options.MaximumBodySize = 1024;
+    options.UseCaseSensitivePaths = true;
+});
+
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -131,6 +138,23 @@ app.UseSerilogRequestLogging();
 app.UseHttpsRedirection();
 
 app.UseCors("AllowAll");
+//adding middleware for the response cashing
+app.UseResponseCaching();
+//writting the code for the middleware for the response cashing
+//adding the middleware for the response cashing
+app.Use(async (context , next) =>
+{
+  context.Response.GetTypedHeaders().CacheControl =
+      new Microsoft.Net.Http.Headers.CacheControlHeaderValue()
+      {
+          Public = true,
+          MaxAge = TimeSpan.FromSeconds(3)
+      };
+    //the cash may vary from one user to another
+    context.Response.Headers[Microsoft.Net.Http.Headers.HeaderNames.Vary] =
+        new string[] { "Accept-Encoding" }; 
+    await next();
+});
 
 app.UseAuthentication();
 app.UseAuthorization();
