@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.OpenApi.Models;
+using Microsoft.AspNetCore.OData;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -115,6 +116,11 @@ builder.Services.AddResponseCaching(options =>
     options.UseCaseSensitivePaths = true;
 });
 
+//adding OData to the services fro query optimization to the user
+builder.Services.AddControllers().AddOData(options => 
+{ 
+    options.Select().Filter().OrderBy().Count();
+});
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

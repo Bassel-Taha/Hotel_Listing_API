@@ -13,6 +13,7 @@ using System.Drawing;
 using ASP_API_Udemy_Course.Repository;
 using Microsoft.AspNetCore.Authorization;
 using ASP_API_Udemy_Course.Models;
+using Microsoft.AspNetCore.OData.Query;
 
 namespace ASP_API_Udemy_Course.Controllers
 {
@@ -33,6 +34,7 @@ namespace ASP_API_Udemy_Course.Controllers
 
         // GET: api/Countries/GetAll
         [HttpGet("GetAll")]
+        [EnableQuery]
         
         public async Task<ActionResult<IEnumerable<GetCountryDTO>>> Getcountries()
         {
@@ -48,7 +50,7 @@ namespace ASP_API_Udemy_Course.Controllers
         }
 
         // GET: api/Countries/?StartIndex=1&MaxPageSize=10&pageNumber=1
-        [HttpGet]
+        [HttpGet("PagedCountries")]
 
         public async Task<ActionResult<PageResult<GetCountryDTO>>> GetPagedCountries([FromQuery] QueryParameters queryParameters)
         {

@@ -10,6 +10,9 @@ using AutoMapper;
 using ASP_API_Udemy_Course.Models.automapping_data_for_security.Hotel;
 using ASP_API_Udemy_Course.Models.refactoring_data_fro_security.Hotel;
 using ASP_API_Udemy_Course.Models.model_data;
+using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.OData.Query;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ASP_API_Udemy_Course.Controllers
 {
@@ -31,6 +34,7 @@ namespace ASP_API_Udemy_Course.Controllers
 
         // GET: api/Hotels
         [HttpGet]
+        [EnableQuery]
         public async Task<ActionResult<IEnumerable<GetHotelDTO>>> Gethotels()
         {
             var GetAllHotels = _mapper.Map<List<GetHotelDTO>>(await _hotelRepository.GetAllasync());
@@ -39,6 +43,7 @@ namespace ASP_API_Udemy_Course.Controllers
 
         // GET: api/Hotels/5
         [HttpGet("{id}")]
+        [Authorize]
         public async Task<ActionResult<GetHotelDTO>> GetHotel(int id)
         {
             var hotel = await _hotelRepository.Getasync(id);
@@ -55,6 +60,7 @@ namespace ASP_API_Udemy_Course.Controllers
         // PUT: api/Hotels/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
+        [Authorize]
         public async Task<IActionResult> PutHotel(int id, PutHotelDTO putHotelDTO)
         {
             var hotel = await _hotelRepository.Getasync(id);
@@ -90,6 +96,7 @@ namespace ASP_API_Udemy_Course.Controllers
         // POST: api/Hotels
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
+        [Authorize]
         public async Task<ActionResult<Hotel>> PostHotel(AddNewHotel AddNewHotel)
         {
             if (AddNewHotel == null)
@@ -104,6 +111,7 @@ namespace ASP_API_Udemy_Course.Controllers
 
         // DELETE: api/Hotels/5
         [HttpDelete("{id}")]
+        [Authorize]
         public async Task<IActionResult> DeleteHotel(int id)
         {
             var hotel = await _hotelRepository.Getasync(id);
