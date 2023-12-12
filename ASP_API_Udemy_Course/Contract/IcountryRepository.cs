@@ -1,6 +1,5 @@
 ﻿using ASP_API_Udemy_Course.Contract;
-using ASP_API_Udemy_Course.Models.data;
-using OfficeOpenXml.FormulaParsing.Excel.Functions.Text;
+using ASP_API_Udemy_Course.data;
 
 public interface IcountryRepository : IGenericRebository<Country>
 {

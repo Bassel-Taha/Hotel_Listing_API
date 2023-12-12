@@ -1,4 +1,4 @@
-﻿namespace ASP_API_Udemy_Course.Models.data
+﻿namespace ASP_API_Udemy_Course.data
 {
     public class Country
     {

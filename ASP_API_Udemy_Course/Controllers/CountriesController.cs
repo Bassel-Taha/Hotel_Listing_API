@@ -7,13 +7,13 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using AutoMapper;
 using ASP_API_Udemy_Course.Models.model_data;
-using ASP_API_Udemy_Course.Models.data;
 using ASP_API_Udemy_Course.Models.automapping_data_for_security.county;
 using System.Drawing;
 using ASP_API_Udemy_Course.Repository;
 using Microsoft.AspNetCore.Authorization;
 using ASP_API_Udemy_Course.Models;
 using Microsoft.AspNetCore.OData.Query;
+using ASP_API_Udemy_Course.data;
 
 namespace ASP_API_Udemy_Course.Controllers
 {

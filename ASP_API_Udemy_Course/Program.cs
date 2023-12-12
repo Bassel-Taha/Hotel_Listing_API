@@ -19,7 +19,7 @@ builder.Services.AddControllers();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-//using JWT with swagger
+//using JWT and  with swagger and adding security requrments
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new() { Title = "ASP_API_Udemy_Course", Version = "v1" });

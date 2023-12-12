@@ -1,5 +1,5 @@
-﻿using ASP_API_Udemy_Course.Models.Configration_for_the_DB_Context;
-using ASP_API_Udemy_Course.Models.data;
+﻿using ASP_API_Udemy_Course.data;
+using ASP_API_Udemy_Course.Models.Configration_for_the_DB_Context;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 

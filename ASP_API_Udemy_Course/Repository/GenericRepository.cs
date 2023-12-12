@@ -5,7 +5,6 @@ using AutoMapper.QueryableExtensions;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using OfficeOpenXml.FormulaParsing.Excel.Functions.Logical;
 
 namespace ASP_API_Udemy_Course.Repository
 {
@@ -85,7 +84,7 @@ namespace ASP_API_Udemy_Course.Repository
         {
             //also can use Update function to modify the entity
             ///_context.Update<T>(entity);
-            ///and the db gonna change the sntity state to modified then return it again
+            ///and the db gonna change the entity state to modified then return it again
             
             _context.Entry<T>(entity).State = EntityState.Modified;
 

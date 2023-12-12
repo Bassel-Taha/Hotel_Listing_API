@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using ASP_API_Udemy_Course.Models.data;
 using AutoMapper;
 using ASP_API_Udemy_Course.Models.automapping_data_for_security.Hotel;
 using ASP_API_Udemy_Course.Models.refactoring_data_fro_security.Hotel;
@@ -13,6 +12,7 @@ using ASP_API_Udemy_Course.Models.model_data;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.OData.Query;
 using Microsoft.AspNetCore.Authorization;
+using ASP_API_Udemy_Course.data;
 
 namespace ASP_API_Udemy_Course.Controllers
 {

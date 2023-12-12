@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace ASP_API_Udemy_Course.Models.data
+namespace ASP_API_Udemy_Course.data
 {
     public class Hotel
     {
@@ -13,6 +13,6 @@ namespace ASP_API_Udemy_Course.Models.data
         [ForeignKey(nameof(CountryId))]
         public int CountryId { get; set; }
         public Country country { get; set; }
-        
+
     }
 }
